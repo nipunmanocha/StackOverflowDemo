@@ -3,4 +3,6 @@ class User < ApplicationRecord
     validates :email, presence: true, length: {minimum:1, maximum:100}, uniqueness: true
     validates :password, presence: true
     validates :salt, presence: true, uniqueness: true
+
+    has_many :questions
 end
