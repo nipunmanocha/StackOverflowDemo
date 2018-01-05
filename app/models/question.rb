@@ -3,4 +3,5 @@ class Question < ApplicationRecord
     validates_numericality_of :user_id
 
     belongs_to :user
+    has_many :answers
 end
