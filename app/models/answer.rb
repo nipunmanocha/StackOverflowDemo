@@ -6,4 +6,5 @@ class Answer < ApplicationRecord
 
     has_many :votes, as: :voteable
     has_many :comments, as: :commentable
+    has_many :revisions, as: :revisable
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180105141649) do
+ActiveRecord::Schema.define(version: 20180105161532) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,6 +55,15 @@ ActiveRecord::Schema.define(version: 20180105141649) do
     t.bigint "tag_id", null: false
     t.index ["question_id"], name: "index_questions_tags_on_question_id"
     t.index ["tag_id"], name: "index_questions_tags_on_tag_id"
+  end
+
+  create_table "revisions", force: :cascade do |t|
+    t.jsonb "metadata"
+    t.string "revisable_type", null: false
+    t.bigint "revisable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["revisable_type", "revisable_id"], name: "index_revisions_on_revisable_type_and_revisable_id"
   end
 
   create_table "tags", force: :cascade do |t|

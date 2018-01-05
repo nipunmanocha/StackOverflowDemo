@@ -6,6 +6,7 @@ class Question < ApplicationRecord
     has_many :answers
     has_many :votes, as: :voteable
     has_many :comments, as: :commentable
+    has_many :revisions, as: :revisable
 
     has_and_belongs_to_many :tags
 end
