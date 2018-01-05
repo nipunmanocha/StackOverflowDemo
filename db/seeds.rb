@@ -75,3 +75,13 @@ vote(users_temp, questions_temp, -1)
 vote(users_temp, answers_temp, 1)
 comment(users_temp, questions_temp)
 comment(users_temp, answers_temp)
+
+10.times { |i| Tag.create(value: "Tag #{i + 1}", description: "This is tag number #{i + 1}") }
+tags = Tag.all
+
+questions_temp = questions[0..4]
+tags_temp = tags[0..5]
+
+questions_temp.each do |question|
+    question.tags = tags_temp
+end
