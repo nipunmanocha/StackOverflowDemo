@@ -17,8 +17,8 @@ ActiveRecord::Schema.define(version: 20180105141649) do
 
   create_table "answers", force: :cascade do |t|
     t.string "text", null: false
-    t.integer "question_id", null: false
-    t.integer "user_id", null: false
+    t.bigint "question_id", null: false
+    t.bigint "user_id", null: false
     t.boolean "accepted", default: false
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
@@ -29,21 +29,22 @@ ActiveRecord::Schema.define(version: 20180105141649) do
 
   create_table "comments", force: :cascade do |t|
     t.string "text", null: false
-    t.integer "commentable_id", null: false
     t.string "commentable_type", null: false
-    t.integer "user_id", null: false
+    t.bigint "commentable_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
+    t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
   create_table "questions", force: :cascade do |t|
     t.string "text", null: false
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.integer "duplicate_id"
     t.boolean "wiki", default: false
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_questions_on_user_id"
@@ -70,21 +71,23 @@ ActiveRecord::Schema.define(version: 20180105141649) do
     t.string "email", null: false
     t.string "password"
     t.string "salt"
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["salt"], name: "index_users_on_salt"
+    t.index ["salt"], name: "index_users_on_salt", unique: true
   end
 
   create_table "votes", force: :cascade do |t|
     t.integer "value", default: 0, null: false
-    t.integer "voteable_id", null: false
     t.string "voteable_type", null: false
-    t.integer "user_id", null: false
+    t.bigint "voteable_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["voteable_id", "voteable_type"], name: "index_votes_on_voteable_id_and_voteable_type"
+    t.index ["user_id"], name: "index_votes_on_user_id"
+    t.index ["voteable_type", "voteable_id"], name: "index_votes_on_voteable_type_and_voteable_id"
   end
 
   add_foreign_key "answers", "questions"
@@ -93,4 +96,5 @@ ActiveRecord::Schema.define(version: 20180105141649) do
   add_foreign_key "questions", "users"
   add_foreign_key "questions_tags", "questions"
   add_foreign_key "questions_tags", "tags"
+  add_foreign_key "votes", "users"
 end

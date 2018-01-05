@@ -1,6 +1,7 @@
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
 
+# utility functions
 def iterate_user_entities (users, entities)
     users.each do |user|
         entities.each do |entity|
@@ -32,7 +33,7 @@ users_list = [
     { name: "Himanshu", email: "himanshu@1mg.com", password: "983737" },
     { name: "Viren", email: "viren@1mg.com", password: "222222", salt: "dsdcs334vv" }
 ]
-users_list.each { |user| User.create(user) }
+User.create(users_list)
 users = User.all
 
 # Seeds for creating questions
@@ -44,16 +45,13 @@ end
 questions = Question.all
 
 # Seeds for creating answers
-users.each do |user|
-    questions.each do |question|
-        unless question[:user_id] == user[:id]
-            Answer.create(
-                text: "This is #{user[:name]}'s answer to question #{question[:text]}", 
-                question: question, 
-                user: user
-            )
-        end
-    end
+iterate_user_entities(users, questions) do |user, question|
+    next if question[:user_id] == user[:id]
+    Answer.create(
+        text: "This is #{user[:name]}'s answer to question #{question[:text]}", 
+        question: question, 
+        user: user
+    )
 end
 answers = Answer.all
 
