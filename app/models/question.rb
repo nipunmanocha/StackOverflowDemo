@@ -1,6 +1,6 @@
 class Question < ApplicationRecord
-    validates :text, presence: true
-    validates :user_id, presence: true, numericality: true
+    validates_presence_of :text, :user_id
+    validates_numericality_of :user_id
 
     belongs_to :user
 end

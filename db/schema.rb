@@ -28,12 +28,12 @@ ActiveRecord::Schema.define(version: 20180104152505) do
   create_table "users", force: :cascade do |t|
     t.string "name", null: false
     t.string "email", null: false
-    t.string "password", null: false
-    t.string "salt", null: false
+    t.string "password"
+    t.string "salt"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["salt"], name: "index_users_on_salt", unique: true
+    t.index ["salt"], name: "index_users_on_salt"
   end
 
   add_foreign_key "questions", "users"
