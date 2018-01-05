@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 20180104152505) do
   enable_extension "plpgsql"
 
   create_table "questions", force: :cascade do |t|
-    t.string "text"
+    t.string "text", null: false
     t.integer "user_id", null: false
     t.integer "duplicate_id"
     t.boolean "wiki", default: false
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 20180104152505) do
   create_table "users", force: :cascade do |t|
     t.string "name", null: false
     t.string "email", null: false
-    t.string "enc_password", null: false
+    t.string "password", null: false
     t.string "salt", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

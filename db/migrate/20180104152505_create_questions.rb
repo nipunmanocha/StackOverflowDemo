@@ -1,7 +1,7 @@
 class CreateQuestions < ActiveRecord::Migration[5.1]
   def change
     create_table :questions do |t|
-      t.string :text
+      t.string :text, null: false
       t.integer :user_id, null: false
       t.integer :duplicate_id
       t.boolean :wiki, default: false
