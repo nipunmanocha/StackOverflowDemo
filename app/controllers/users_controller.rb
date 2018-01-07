@@ -11,6 +11,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       flash[:success] = "Welcome to Stack Overflow!"
+      log_in @user
       redirect_to @user
     else
       render 'new'
