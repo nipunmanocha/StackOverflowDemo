@@ -140,3 +140,8 @@ input, textarea, select, .uneditable-input {
       color: $state-danger-text;
     }
   }
+
+  #add_question_div {
+    padding-top: 10px;
+    float: right
+  }
