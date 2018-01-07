@@ -1,6 +1,11 @@
 class QuestionsController < ApplicationController
   before_action :validate_question, only: [:update, :destroy]
 
+  def index
+    @questions = Question.active
+    render json: @questions, status: :ok
+  end
+
   def new
     @question = Question.new
   end
@@ -8,11 +13,17 @@ class QuestionsController < ApplicationController
   def create
     @question = Question.new(question_params)
     if @question.save
-      flash[:success] = "Question created successfully.."
-      redirect_to User.find_by(id: session[:user_id])
+      render json: @question, status: :created, location: @question
     else
-      render 'new'
+      render json: @question.errors, status: :unprocessable_entity
     end
+
+    # if @question.save
+    #   flash[:success] = "Question created successfully.."
+    #   redirect_to User.find_by(id: session[:user_id])
+    # else
+    #   render 'new'
+    # end
   end
 
   def show
@@ -32,14 +43,14 @@ class QuestionsController < ApplicationController
   end
 
   private
-  def question_params
-    return_params = params.require(:question).permit(:text)
-    return_params[:user_id] = session[:user_id]
-    return_params
-  end
+    def question_params
+      return_params = params.require(:question).permit(:text)
+      return_params[:user_id] = session[:user_id]
+      return_params
+    end
 
-  def validate_question
-    @question = Question.active.find_by(id: params[:id], user_id: session[:user_id])
-    render json: { error: "You cannot perform this action" }, status: 404 unless @question
-  end
+    def validate_question
+      @question = Question.active.find_by(id: params[:id], user_id: session[:user_id])
+      render json: { error: "You cannot perform this action" }, status: 404 unless @question
+    end
 end
