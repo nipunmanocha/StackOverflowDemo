@@ -3,32 +3,22 @@ class QuestionsController < ApplicationController
 
   def index
     @questions = Question.active
-    render json: @questions, status: :ok
-  end
-
-  def new
-    @question = Question.new
+    render json: @questions , status: :ok
   end
 
   def create
     @question = Question.new(question_params)
-    if @question.save
-      render json: @question, status: :created, location: @question
-    else
-      render json: @question.errors, status: :unprocessable_entity
-    end
-
-    # if @question.save
-    #   flash[:success] = "Question created successfully.."
-    #   redirect_to User.find_by(id: session[:user_id])
-    # else
-    #   render 'new'
-    # end
+    return render json: @question.errors, status: :unprocessable_entity unless @question.save
+    render json: @question, status: :created, location: @question
   end
 
   def show
     @question = Question.active.find(params[:id])
     @answers = @question.answers
+    render json: {
+      question: @question,
+      answers: @answers
+    }
   end
 
   def update

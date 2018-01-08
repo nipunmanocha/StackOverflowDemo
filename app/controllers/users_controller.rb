@@ -9,10 +9,10 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     @questions = @user.questions
-  end
-
-  def new
-    @user = User.new
+    render json: {
+      user: @user, 
+      questions: @questions
+    }, status: :ok
   end
 
   def create
@@ -23,25 +23,11 @@ class UsersController < ApplicationController
     else
       render json: @user.errors, status: :unprocessable_entity
     end
-
-    # respond_to do |format|
-    #   if @user.save
-    #     flash[:success] = "Welcome to Stack Overflow!"
-    #     log_in @user
-    #     format.html { redirect_to @user }
-    #     format.json { render json: @user, status: :created, location: @user }
-    #   else
-    #     format.html { render 'new' }
-    #     format.json { render json: @user.errors, status: :unprocessable_entity }
-    #   end
-    # end
   end
 
   def update
-    @user.name ||= update_params[:name] 
-    @user.email ||= update_params[:email]
-    return render json: @user.errors, status: 500 unless @user.save(validate: false)
-    render json: @user, status: :ok
+    return render json: @user.errors, status: 500 unless @user.update_attributes(update_params)
+    render json: @user, status: 200
   end
 
   def destroy
