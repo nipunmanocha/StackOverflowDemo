@@ -8,7 +8,7 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-    @questions = @user.questions
+    @questions = @user.questions.active
     render json: {
       user: @user, 
       questions: @questions
