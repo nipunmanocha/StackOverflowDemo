@@ -2,7 +2,7 @@ class QuestionsController < ApplicationController
   before_action :validate_question, only: [:update, :destroy]
 
   def index
-    @questions = Question.active
+    @questions = Question.all
     render json: @questions , status: :ok
   end
 
@@ -13,7 +13,7 @@ class QuestionsController < ApplicationController
   end
 
   def show
-    @question = Question.active.find(params[:id])
+    @question = Question.find(params[:id])
     @answers = @question.answers
     render json: {
       question: @question,
@@ -40,7 +40,7 @@ class QuestionsController < ApplicationController
     end
 
     def validate_question
-      @question = Question.active.find_by(id: params[:id], user_id: session[:user_id])
+      @question = Question.find_by(id: params[:id], user_id: session[:user_id])
       render json: { error: "You cannot perform this action" }, status: 404 unless @question
     end
 end

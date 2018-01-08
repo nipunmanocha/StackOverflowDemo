@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action :is_valid_user, only: [:update, :destroy]
 
   def index
-    @users = User.active
+    @users = User.all
     render json: @users, status: :ok
   end
 
@@ -47,7 +47,7 @@ class UsersController < ApplicationController
     end
 
     def is_valid_user
-      @user = User.active.find_by(id: params[:id])
+      @user = User.find_by(id: params[:id])
       return render json: { error: 'Invalid User' }, status: 404 unless @user
       render json: { error: "Invalid Action" } if @user.id != session[:user_id]
     end

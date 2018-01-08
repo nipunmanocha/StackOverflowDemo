@@ -2,7 +2,7 @@ class AnswersController < ApplicationController
     before_action :validate_answer, only: [:update, :destroy]
 
     def index
-        @answers = Answer.active
+        @answers = Answer.all
 
         @answers = @answers.where(user_id: params[:user_id]) if params[:user_id]
         @answers = @answers.where(question_id: params[:question_id]) if params[:question_id]
@@ -41,7 +41,7 @@ class AnswersController < ApplicationController
         end
 
         def validate_answer
-            @answer = Answer.active.find_by(id: params[:id], user_id: session[:user_id])
+            @answer = Answer.find_by(id: params[:id], user_id: session[:user_id])
             return render json: { error: "Invalid action" }, status: 404 unless @answer
         end
 end

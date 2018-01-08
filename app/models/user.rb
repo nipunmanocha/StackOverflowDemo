@@ -16,4 +16,6 @@ class User < ApplicationRecord
     has_many :answers
     has_many :votes
     has_many :comments
+
+    default_scope { where(deleted_at: nil) }
 end
