@@ -8,17 +8,16 @@
     </section>
   </aside>
 
-  <div class="col-md-4">
-    <ul>
-      <% @questions.each do |question| %>
-        <li>
-          <%= link_to question[:text], question_path(question) %>
-        </li>
-      <% end %>
-    </ul>
+  <div class="col-md-4 text-center">
+    <h2>My Questions</h2>
+    <% @questions.each do |question| %>
+        <%= link_to question[:text], question_path(question) %> <br/>
+    <% end %>
   </div>
 
   <div class="col-md-4" id="add_question_div">
-    <%= link_to 'Add a Question', new_question_path, class: "btn btn-primary" %>
+    <% if @user.id == session[:user_id] %>
+      <%= link_to 'Add a Question', new_question_path, class: "btn btn-primary" %>
+    <% end %>
   </div>
 </div>

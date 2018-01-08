@@ -7,3 +7,16 @@
 
   <%= link_to "Sign up now!", signup_path, class: "btn btn-lg btn-primary" %>
 </div>
+
+<div class="row">
+  <div class="col-md-offset-2 col-md-8">
+    <h2>Top Questions</h2>
+
+    <div class="text-center">
+    <% @top_questions.each do |question| %>
+      <strong><%= link_to question[:text], question_path(question) %></strong> <br/>
+      By <small><%= link_to question.user[:name], user_path(question.user) %></small><br/><br/>
+    <% end %>
+    </div>
+  </div>
+</div>
