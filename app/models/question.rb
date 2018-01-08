@@ -9,4 +9,6 @@ class Question < ApplicationRecord
     
     has_many :answers
     has_and_belongs_to_many :tags
+
+    default_scope { where(deleted_at: nil) }
 end
