@@ -1,6 +1,4 @@
 class Question < ApplicationRecord
-    include Revisable
-
     validates_presence_of :text, :user
 
     belongs_to :user
@@ -11,4 +9,5 @@ class Question < ApplicationRecord
     preserve_data
     commentable
     voteable
+    revisable
 end
