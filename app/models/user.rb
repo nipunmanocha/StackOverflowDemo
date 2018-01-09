@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+    include SoftDelete
+
     VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
     before_save { self.email = email.downcase }
@@ -16,6 +18,4 @@ class User < ApplicationRecord
     has_many :answers
     has_many :votes
     has_many :comments
-
-    default_scope { where(deleted_at: nil) }
 end

@@ -1,4 +1,5 @@
 class Answer < ApplicationRecord
+    include SoftDelete
     include Commentable
     include Voteable
     include Revisable
@@ -7,6 +8,4 @@ class Answer < ApplicationRecord
 
     belongs_to :question
     belongs_to :user
-
-    default_scope { where(deleted_at: nil) }
 end
