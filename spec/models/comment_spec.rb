@@ -22,7 +22,7 @@ RSpec.describe Comment, type: :model do
     end
 
     describe 'Scope tests' do
-        it 'should not return deleted questions in default scope' do
+        it 'should not return deleted comments in default scope' do
             question_comment.deleted_at = Time.now
             expect(question_comment.save).to eq(true)
             expect(Comment.all.count).to eq(0)
