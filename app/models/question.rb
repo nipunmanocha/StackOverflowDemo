@@ -1,7 +1,4 @@
 class Question < ApplicationRecord
-    include SoftDelete
-    include Commentable
-    include Voteable
     include Revisable
 
     validates_presence_of :text, :user
@@ -10,4 +7,8 @@ class Question < ApplicationRecord
     
     has_many :answers
     has_and_belongs_to_many :tags
+
+    preserve_data
+    commentable
+    voteable
 end
