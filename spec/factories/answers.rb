@@ -1,7 +1,7 @@
 FactoryBot.define do
     factory :answer do |f|
         f.text { Faker::HarryPotter.quote }
-        question
-        user
+        f.question
+        f.user
     end
 end
