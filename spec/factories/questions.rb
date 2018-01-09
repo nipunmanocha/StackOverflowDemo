@@ -1,8 +1,6 @@
 FactoryBot.define do
-    factory :question do
-        text 'This is a test question'
-        duplicate_id nil
-        wiki false
-        user
+    factory :question do |f|
+        f.text { Faker::HarryPotter.book }
+        f.user
     end
 end
