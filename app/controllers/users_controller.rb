@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :is_valid_user, only: [:update, :destroy]
+  # before_action :is_valid_user, only: [:update, :destroy]
 
   def index
     @users = User.all
@@ -8,11 +8,7 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-    @questions = @user.questions.active
-    render json: {
-      user: @user, 
-      questions: @questions
-    }, status: :ok
+    render json: @user, status: :ok
   end
 
   def create
@@ -26,15 +22,17 @@ class UsersController < ApplicationController
   end
 
   def update
-    return render json: @user.errors, status: 500 unless @user.update_attributes(update_params)
-    render json: @user, status: 200
+    @user = User.find_by(id: params[:id]) #remove this line when you uncomment before_action
+    return render json: @user.errors, status: :unprocessable_entity unless @user.update_attributes(update_params)
+    render json: @user, status: :ok
   end
 
   def destroy
+    @user = User.find_by(id: params[:id]) #remove this line when you uncomment before_action
     @user.deleted_at = Time.now
     log_out
-    return render json: @user.errors, status: 500 unless @user.save(validate: false)
-    render json: @user, status: 201
+    return render json: @user.errors, status: :internal_server_error unless @user.save(validate: false)
+    render json: @user, status: :ok
   end
 
   private
@@ -48,7 +46,7 @@ class UsersController < ApplicationController
 
     def is_valid_user
       @user = User.find_by(id: params[:id])
-      return render json: { error: 'Invalid User' }, status: 404 unless @user
-      render json: { error: "Invalid Action" } if @user.id != session[:user_id]
+      return render json: { error: 'Invalid User' }, status: :not_found unless @user
+      render json: { error: "Invalid Action" }, status: :unauthorized if @user.id != session[:user_id]
     end
 end
