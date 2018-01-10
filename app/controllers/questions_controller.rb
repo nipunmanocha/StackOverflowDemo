@@ -6,30 +6,27 @@ class QuestionsController < ApplicationController
     render json: @questions , status: :ok
   end
 
+  def show
+    @question = Question.find(params[:id])
+    render json: @question, status: :ok
+  end
+
   def create
+    return render json: { redirect_url: signup_path }, status: :forbidden unless question_params[:user_id]
     @question = Question.new(question_params)
     return render json: @question.errors, status: :unprocessable_entity unless @question.save
     render json: @question, status: :created, location: @question
   end
 
-  def show
-    @question = Question.find(params[:id])
-    @answers = @question.answers
-    render json: {
-      question: @question,
-      answers: @answers
-    }
-  end
-
   def update
-    return render json: @question.errors, status: 500 unless @question.update_attributes(question_params)
-    render json: @question, status: 200
+    return render json: @question.errors, status: :unprocessable_entity unless @question.update_attributes(question_params)
+    render json: @question, status: :ok
   end
 
   def destroy
     @question.deleted_at = Time.now
-    return render json: @question.errors, status: 500 unless @question.save
-    render json: @question, status: 201
+    return render json: @question.errors, status: :internal_server_error unless @question.save
+    render json: @question, status: :ok
   end
 
   private
@@ -41,6 +38,6 @@ class QuestionsController < ApplicationController
 
     def validate_question
       @question = Question.find_by(id: params[:id], user_id: session[:user_id])
-      render json: { error: "You cannot perform this action" }, status: 404 unless @question
+      render json: { error: "You cannot perform this action" }, status: :not_found unless @question
     end
 end
