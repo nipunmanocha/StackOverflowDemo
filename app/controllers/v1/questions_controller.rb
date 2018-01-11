@@ -1,4 +1,4 @@
-class QuestionsController < ApplicationController
+class V1::QuestionsController < ApplicationController
   before_action :validate_question, only: [:update, :destroy]
 
   def index

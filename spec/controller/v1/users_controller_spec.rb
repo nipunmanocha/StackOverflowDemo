@@ -1,4 +1,4 @@
-RSpec.describe UsersController, type: :controller do
+RSpec.describe V1::UsersController, type: :controller do
   let!(:user) { FactoryBot.build(:user) }
 
   describe 'GET #index' do
@@ -60,7 +60,7 @@ RSpec.describe UsersController, type: :controller do
 
         parsed_body = JSON.parse(response.body, symbolize_names: true)
         expect(response).to have_http_status(:unauthorized)
-        expect(parsed_body[:redirect_url]).to eq(signup_path)
+        expect(parsed_body[:redirect_url]).to eq(v1_signup_path)
       end
     end
 
@@ -109,7 +109,7 @@ RSpec.describe UsersController, type: :controller do
 
         parsed_body = JSON.parse(response.body, symbolize_names: true)
         expect(response).to have_http_status(:unauthorized)
-        expect(parsed_body[:redirect_url]).to eq(signup_path)
+        expect(parsed_body[:redirect_url]).to eq(v1_signup_path)
       end
     end
 

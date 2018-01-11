@@ -1,4 +1,4 @@
-RSpec.describe VotesController, type: :controller do
+RSpec.describe V1::VotesController, type: :controller do
   let(:vote) { FactoryBot.build(:question_vote) }
 
   describe 'GET #index' do

@@ -1,4 +1,4 @@
-RSpec.describe QuestionsController, type: :controller do
+RSpec.describe V1::QuestionsController, type: :controller do
   let(:question) { FactoryBot.build(:question) }
 
   describe 'GET #index' do

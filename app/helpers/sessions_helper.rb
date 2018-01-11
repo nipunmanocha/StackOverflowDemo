@@ -17,6 +17,6 @@ module SessionsHelper
     end
 
     def require_login
-        render json: { redirect_url: signup_path }, status: :unauthorized unless session[:user_id]
+        render json: { redirect_url: v1_signup_path }, status: :unauthorized unless session[:user_id]
     end
 end

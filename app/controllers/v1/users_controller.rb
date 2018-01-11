@@ -1,4 +1,4 @@
-class UsersController < ApplicationController
+class V1::UsersController < ApplicationController
   before_action :require_login, only: [:update, :destroy]
   before_action :authenticate_user, only: [:update, :destroy]
 
@@ -12,8 +12,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.create!(user_params)
-    log_in @user
-    render json: @user, status: :created, location: @user
+    render json: @user, status: :created
   end
 
   def update
