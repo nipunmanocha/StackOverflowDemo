@@ -15,4 +15,8 @@ module SessionsHelper
         session.delete(:user_id)
         @current_user = nil
     end
+
+    def require_login
+        render json: { redirect_url: signup_path }, status: :unauthorized unless session[:user_id]
+    end
 end

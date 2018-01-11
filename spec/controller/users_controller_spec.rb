@@ -29,7 +29,7 @@ RSpec.describe UsersController, type: :controller do
       it 'should not allow user creation' do
         post :create, params: { user: { name: user[:name], email: user[:email] } }
   
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:bad_request)
         expect(response.content_type).to eq('application/json')
       end
     end
@@ -53,73 +53,86 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe 'PUT #update' do
-    # context 'Invalid User' do
-    #   it 'should not update' do
-    #     user.save
-    #     User.delete_all
-    #     put :update, params: { id: user[:id] }
-
-    #     expect(response).to have_http_status(:not_found)
-    #   end
-    # end
-
-    # context 'User not logged in or trying to update other user info' do
-    #   it 'should not update' do
-    #     user.save
-    #     put :update, params: {id: }
-    #   end
-    # end
-
-    # User authentication has been commented out here
-    context 'Valid User but Invalid/Missing update params' do
-      it 'should not update' do
+    context 'User not logged in' do
+      it 'should redirect to login page' do
         user.save
-        put :update, params: { id: user[:id], user: { name: '' } }
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(User.find(user[:id])[:email]).to eq(user[:email])
+        put :update, params: { id: user[:id], user: { name: 'Update name' } }
+
+        parsed_body = JSON.parse(response.body, symbolize_names: true)
+        expect(response).to have_http_status(:unauthorized)
+        expect(parsed_body[:redirect_url]).to eq(signup_path)
       end
     end
 
-    context 'Valid User and correct parameters' do
-      it 'should update' do
-        user.save
-        new_email = 'new_email@update.com'
-        put :update, params: { id: user[:id], user: { name: 'Updated name', email: new_email } }
+    context 'User signed in' do
+      context 'trying to update info of some other user' do
+        it 'should not update' do
+          user.save
+          session[:user_id] = user.id
+          new_user = FactoryBot.create(:user)
+          
+          put :update, params: { id: new_user[:id], user: { name: 'Update name' } }
+          expect(response).to have_http_status(:unauthorized)
+        end
+      end
 
-        expect(response).to have_http_status(:ok)
-        expect(User.find(user[:id])[:email]).to eq(new_email)
+      context 'trying to update to a existing email' do
+        it 'should not update' do
+          user.save
+          session[:user_id] = user.id
+          new_user = FactoryBot.create(:user)
+
+          put :update, params: { id: user[:id], user: { email: new_user[:email] } }
+          expect(response).to have_http_status(:bad_request)
+        end
+      end
+
+      context 'successful update' do
+        it 'should update' do
+          user.save
+          session[:user_id] = user.id
+          new_email = 'abc@def.com'
+
+          put :update, params: { id: user[:id], user: { email: new_email } }
+          expect(response).to have_http_status(:ok)
+          expect(User.find_by(id: user[:id])[:email]).to eq(new_email)
+        end
       end
     end
   end
 
   describe 'DELETE #destroy' do
-    # context 'Invalid User' do
-    #   it 'should not delete' do
-    #     user.save
-    #     User.delete_all
-    #     delete :destroy, params: { id: user[:id] }
-
-    #     expect(response).to have_http_status(:not_found)
-    #   end
-    # end
-
-    # context 'User not logged in or trying to delete other user info' do
-    #   it 'should not delete' do
-    #     user.save
-    #     new_user = FactoryBot.create(:user)
-        
-    #     delete :destroy, params: { id: new_user[:id] }
-    #     expect(response).to have_http_status(:unauthorized)
-    #   end
-    # end
-
-    context 'Valid User' do
-      it 'should delete' do
+    context 'User not logged in' do
+      it 'should redirect to login page' do
         user.save
         delete :destroy, params: { id: user[:id] }
 
-        expect(response).to have_http_status(:ok)
-        expect(User.find_by(id: user[:id])).to be_nil
+        parsed_body = JSON.parse(response.body, symbolize_names: true)
+        expect(response).to have_http_status(:unauthorized)
+        expect(parsed_body[:redirect_url]).to eq(signup_path)
+      end
+    end
+
+    context 'User signed in' do
+      context 'trying to delete some other user info' do
+        it 'should not delete' do
+          user.save
+          session[:user_id] = user.id
+          new_user = FactoryBot.create(:user)
+          
+          delete :destroy, params: { id: new_user[:id] }
+          expect(response).to have_http_status(:unauthorized)
+        end
+      end
+
+      context 'successful delete' do
+        it 'should delete' do
+          user.save
+          session[:user_id] = user.id
+          delete :destroy, params: { id: user[:id] }
+          expect(response).to have_http_status(:ok)
+          expect(User.find_by(id: user[:id])).to be_nil
+        end
       end
     end
   end
