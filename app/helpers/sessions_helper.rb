@@ -4,6 +4,8 @@ module SessionsHelper
     end
 
     def current_user
+        puts session.to_json
+        puts(User.find_by(id: session[:user_id]).to_json)
         @current_user ||= User.find_by(id: session[:user_id])
     end
 
