@@ -1,5 +1,8 @@
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
-  include CustomAttributes
+  include Commentable
+  include PreserveData
+  include Revisable
+  include Voteable
 end
