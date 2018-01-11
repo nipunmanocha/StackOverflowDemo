@@ -2,7 +2,7 @@ class V1::AnswersController < ApplicationController
   before_action :require_login, only: [:create, :update, :delete]
 
   def index
-    render json: answers, status: :ok
+    render json: answers.where(question_id: params[:question_id]), status: :ok
   end
 
   def show
