@@ -4,10 +4,9 @@ RSpec.describe V1::AnswersController, type: :controller do
   describe 'GET #index' do
     it 'should get all answers' do
       answer.save
-
-      get :index
+      session[:user_id] = answer.user.id
+      get :index, params: { question_id: answer.question.id }
       parsed_body = JSON.parse(response.body, symbolize_names: true)
-
       expect(response).to have_http_status(:ok)
       expect(response.content_type).to eq('application/json')
       expect(parsed_body[0][:id]).to eq(answer[:id])
@@ -17,8 +16,8 @@ RSpec.describe V1::AnswersController, type: :controller do
   describe 'GET #show' do
     it 'returns one answer in JSON format' do
       answer.save
+      session[:user_id] = answer.user.id
       get :show, params: { id: answer[:id] }
-
       expect(response).to have_http_status(:ok)
       expect(response.content_type).to eq('application/json')
       expect(response.body).to eq(answer.to_json)
@@ -28,10 +27,10 @@ RSpec.describe V1::AnswersController, type: :controller do
   describe 'POST #create' do
     context 'non logged in user' do
       it 'should not create answer' do
-        post :create, params: { answer: { text: answer[:text], question_id: answer.question.id } }
+        post :create, params: { question_id: answer.question.id, answer: { text: answer[:text] } }
         parsed_body = JSON.parse(response.body, symbolize_names: true)
-        expect(response).to have_http_status(:forbidden)
-        expect(parsed_body[:redirect_url]).to eq(signup_path)
+        expect(response).to have_http_status(:unauthorized)
+        expect(parsed_body[:redirect_url]).to eq(v1_signup_path)
       end
     end
 
@@ -40,13 +39,13 @@ RSpec.describe V1::AnswersController, type: :controller do
       let(:question) { FactoryBot.create(:question) }
       it 'should not create answer if text is empty' do
         session[:user_id] = user[:id]
-        post :create, params: { answer: { text: '', question_id: question[:id] } }
-        expect(response).to have_http_status(:unprocessable_entity)
+        post :create, params: { question_id: question[:id], answer: { text: '' } }
+        expect(response).to have_http_status(:bad_request)
       end
 
       it 'should create a new answer if valid params' do
         session[:user_id] = user[:id]
-        post :create, params: { answer: { text: answer[:text], question_id: question[:id] } }
+        post :create, params: { question_id: question[:id], answer: { text: answer[:text] } }
         expect(response).to have_http_status(:created)
         expect(Answer.last[:text]).to eq(answer[:text])
       end
@@ -55,11 +54,19 @@ RSpec.describe V1::AnswersController, type: :controller do
 
   describe 'PUT #update' do
     context 'non logged in user' do
+      it 'should not redirect to login page' do
+        answer.save
+        put :update, params: { id: answer.id }
+        parsed_body = JSON.parse(response.body, symbolize_names: true)
+        expect(response).to have_http_status(:unauthorized)
+        expect(parsed_body[:redirect_url]).to eq(v1_signup_path)
+      end
     end
 
     context 'logged in user' do
       it 'should not update if answer is not present' do 
         answer.save
+        session[:user_id] = answer.user.id
         Answer.delete_all
         put :update, params: { id: answer[:id], answer: { text: 'This is the updated answer' } }
         expect(response).to have_http_status :not_found
@@ -69,7 +76,7 @@ RSpec.describe V1::AnswersController, type: :controller do
         answer.save
         session[:user_id] = answer.user.id
         put :update, params: { id: answer[:id], answer: { text: '' } }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:bad_request)
       end
 
       it 'should update if all valid params' do
