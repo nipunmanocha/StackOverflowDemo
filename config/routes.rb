@@ -19,6 +19,7 @@ Rails.application.routes.draw do
         resources :answers, shallow: true, concerns: [:commentable, :voteable]
       end
     end
+    resources :tags
   end
 
   namespace :v1 do
