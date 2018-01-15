@@ -1,3 +1,4 @@
+# Module to create revisions of a model
 module Revisable
   extend ActiveSupport::Concern
   

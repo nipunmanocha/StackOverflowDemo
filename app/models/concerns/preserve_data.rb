@@ -1,3 +1,6 @@
+# Module to give a soft-delete feature to the models. These include: 
+# - providing a default scope
+# - overwriting the destroy action
 module PreserveData
   extend ActiveSupport::Concern
 

@@ -1,3 +1,4 @@
+# Module to make a model voteable
 module Voteable
   extend ActiveSupport::Concern
 

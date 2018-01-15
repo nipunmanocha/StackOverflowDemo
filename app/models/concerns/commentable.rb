@@ -1,3 +1,4 @@
+# Module to make a model commentable
 module Commentable
   extend ActiveSupport::Concern
 
