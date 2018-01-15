@@ -1,10 +1,4 @@
 Rails.application.routes.draw do
-  # root to: 'static_pages#home'
-  # resources :users
-  # resources :questions
-  # resources :answers
-  # resources :votes
-
   concern :commentable { resources :comments, shallow: true }
   concern :voteable { resources :votes, shallow: true }
 
