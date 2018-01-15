@@ -7,21 +7,20 @@ class V1::UsersController < ApplicationController
   end
 
   def show
-    render json: User.find(params[:id]), status: :ok
+    render json: user, status: :ok
   end
 
   def create
-    @user = User.create!(user_params)
-    render json: @user, status: :created
+    render json: User.create!(user_params), status: :created
   end
 
   def update
-    @user.update!(user_update_params)
-    render json: @user, status: :ok
+    user.update!(user_update_params)
+    render json: user, status: :ok
   end
 
   def destroy
-    @user.destroy!
+    user.destroy!
     head :ok
   end
 
@@ -34,8 +33,11 @@ class V1::UsersController < ApplicationController
       params.require(:user).permit(:name, :email)
     end
 
+    def user
+      User.find_by(id: params[:id])
+    end
+
     def authenticate_user
-      @user = User.find_by(id: params[:id])
-      head :unauthorized unless @user && @user == current_user
+      head :unauthorized unless user && user == current_user
     end
 end
