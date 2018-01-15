@@ -1,3 +1,4 @@
+# Module to share session related info across various controllers
 module SessionInfo
   extend ActiveSupport::Concern
 

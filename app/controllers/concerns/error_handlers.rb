@@ -1,3 +1,4 @@
+# Module to centrally capture the errors
 module ErrorHandlers
   extend ActiveSupport::Concern
 
